@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>nl.knaw.dans.shared</groupId>
+    <artifactId>dans-mvn-base</artifactId>
+    <name>DANS Maven Project Basic Settings</name>
+    <version>2.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <description>
+        Parent project for all DANS Maven-based projects. It only defines some basic settings and one
+        plug-in, namely the JFrog plug-in to publish the module and its descendants to the DANS Maven Repository.
+    </description>
+    <properties>
+        <artifactory-maven-plugin.version>2.6.1</artifactory-maven-plugin.version>
+        <artifactory-maven-plugin.contextUrl>http://maven-repo.dans.knaw.nl</artifactory-maven-plugin.contextUrl>
+        <artifactory-maven-plugin.repoKey>libs-release-local</artifactory-maven-plugin.repoKey>
+        <artifactory-maven-plugin.snapshotRepoKey>libs-snapshot-local</artifactory-maven-plugin.snapshotRepoKey>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- wrapped system property maven.build.timestamp in own property as work-around for
+         https://issues.apache.org/jira/browse/MRESOURCES-99. This should actually be fixed since
+         Maven 3.0.0, so prefer the use of maven.build.timestamp over this custom property.
+         -->
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+    </properties>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>Bintray</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>http://jcenter.bintray.com</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jfrog.buildinfo</groupId>
+                <artifactId>artifactory-maven-plugin</artifactId>
+                <version>${artifactory-maven-plugin.version}</version>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <id>build-info</id>
+                        <goals>
+                            <goal>publish</goal>
+                        </goals>
+                        <configuration>
+                            <publisher>
+                                <contextUrl>${artifactory-maven-plugin.contextUrl}</contextUrl>
+                                <username>{{ ARTIFACTORY_USER }}</username>
+                                <password>{{ ARTIFACTORY_PW }}</password>
+                                <repoKey>${artifactory-maven-plugin.repoKey}</repoKey>
+                                <snapshotRepoKey>${artifactory-maven-plugin.snapshotRepoKey}</snapshotRepoKey>
+                            </publisher>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
