@@ -12,5 +12,6 @@
         <module>dans-mvn-plugin-defaults</module>
         <module>dans-mvn-lib-defaults</module>
         <module>dans-mvn-build-resources</module>
+        <module>dans-scala-project</module>
     </modules>
 </project>
