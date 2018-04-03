@@ -14,6 +14,7 @@
         <module>dans-mvn-build-resources</module>
         <module>dans-scala-project</module>
         <module>dans-scala-app-project</module>
+        <module>dans-scala-service-project</module>
         <module>dans-java-project</module>
     </modules>
 </project>

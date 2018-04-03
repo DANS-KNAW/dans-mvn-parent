@@ -16,7 +16,7 @@ or:
 
     <parent>
        <groupId>nl.knaw.dans.shared</groupId>
-       <artifactId>dans-scala-project</artifactId>
+       <artifactId>dans-scala-[(app|service)-]project</artifactId>
        <version>2.0.0</version>
     </parent>
 
@@ -26,14 +26,14 @@ DESCRIPTION
 This module defines several Maven parent projects for use in DANS Maven based projects.
 
 ### Goals
-* To define default versions and scopes for commonly used dependencies. This is done by declaring
+* Define default versions and scopes for commonly used dependencies. This is done by declaring
   managed dependencies in the base modules. The inheriting project then only needs to declare the
   dependency using the `groupId` and `artifactId` to automatically use the defaults, while it can
   still override those, if necessary.
-* To define default versions and configurations for commonly used plug-ins. This is done by declaring
+* Define default versions and configurations for commonly used plug-ins. This is done by declaring
   managed plug-ins, which work the same as managed dependencies. This saves even more space in the inheriting
   project, as plug-in configurations can be rather long.
-* To declare a few dependencies and plug-ins that are (almost) always used in DANS projects. However, this
+* Declare a few dependencies and plug-ins that are (almost) always used in DANS projects. However, this
   is only done in the sub-modules lowest in the hierarchy, so if you really do not need those dependencies
   you can inherit from a parent higher in the tree.
 
@@ -54,26 +54,34 @@ as follows:
                                          |
                                   -------------------
                                   |                 |
-                            dans-java-parent     dans-scala-parent
+                            dans-java-project     dans-scala-project
+                                                    |
+                                                 dans-scala-app-project
+                                                    |
+                                                 dans-scala-service-project
 
 
-POM                        | Description
----------------------------|-------------------------------------------------------------
-`dans-mvn-base`            | Only basic facilities needed by all projects.
-`dans-mvn-plugin-defaults` | Only managed plug-in configurations.
-`dans-mvn-lib-defaults`    | Only managed dependency configurations.
-`dans-java-parent`         | The basic dependencies and plug-ins needed for any DANS Java project.
-`dans-scala-parent`        | The basic dependencies and plug-ins needed for any DANS Scala project.
+POM                          | Description
+-----------------------------|-------------------------------------------------------------
+`dans-mvn-base`              | Only basic facilities needed by all projects.
+`dans-mvn-plugin-defaults`   | Only managed plug-in configurations.
+`dans-mvn-lib-defaults`      | Only managed dependency configurations.
+`dans-java-project`          | The basic dependencies and plug-ins needed for any DANS Java project.
+`dans-scala-project`         | The basic dependencies and plug-ins needed for any DANS Scala project.
+`dans-scala-app-project`     | The basic dependencies and plug-ins needed for a Scala based application.`dans-scala-app-project`
+`dans-scala-service-project` | The basic dependencies and plug-ins needed for a Scala based service.
 
-Note that this means that only the latter two projects declare any dependencies or plug-ins actually inherited by your
+
+Note that this means that only the projects with names ending in `-project` declare any dependencies or plug-ins actually inherited by your
 project. (Actually, `dans-mvn-base` also does, but it is one plug-in dependency you can easily ignore.)
 
 INSTALLATION AND CONFIGURATION
 ------------------------------
 To use these parents you need to add two thing to you POM file:
 
-* The parent project you want to inherit from. In most cases this should be `dans-scala-project` or
-  `dans-java-project`. However, you can also use one of the parents higher up in the inheritance tree.
+* The parent project you want to inherit from. In most cases this should be `dans-scala-app-project` (for command-line only applications),
+  `dans-scala-service-project` (for daemons) or `dans-java-project` (for Java-based projects). However, you can also use one of the parents
+  higher up in the inheritance tree.
 * The DANS Maven repositories.
 
 This will look like the following. Note that the version in this example may not be the latest available version.
@@ -82,7 +90,7 @@ This will look like the following. Note that the version in this example may not
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
         <parent>
             <groupId>nl.knaw.dans.shared</groupId>
-            <artifactId>dans-scala-project</artifactId>
+            <artifactId>dans-scala-app-project</artifactId>
             <version>2.0.0</version>
         </parent>
         <!-- ... -->
@@ -107,6 +115,8 @@ This will look like the following. Note that the version in this example may not
         <!-- ... -->
     </project>
 
+You may in some cases want to extend the plug-in configurations that you inherited. You can often selectively override or append to the configuration
+declared in the parent, using the `combine.*` attributes. See for an example the `pom.xml` file in `dans-scala-service-project`.
 
 BUILDING FROM SOURCE
 --------------------

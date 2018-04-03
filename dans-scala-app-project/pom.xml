@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>dans-scala-app-project</artifactId>
-    <name>DANS Scala Application/Service Project</name>
+    <name>DANS Scala Application Project</name>
     <packaging>pom</packaging>
     <build>
         <resources>
@@ -77,12 +77,6 @@
                             </goals>
                         </execution>
                     </executions>
-                    <configuration>
-                        <group>Applications/Archiving</group>
-                        <requires combine.children="append">
-                            <require>jsvc</require>
-                        </requires>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
