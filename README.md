@@ -26,14 +26,12 @@ DESCRIPTION
 This module defines several Maven parent projects for use in DANS Maven based projects.
 
 ### Goals
-This is done to achieve the following goals.
-
 * To define default versions and scopes for commonly used dependencies. This is done by declaring
   managed dependencies in the base modules. The inheriting project then only needs to declare the
   dependency using the `groupId` and `artifactId` to automatically use the defaults, while it can
   still override those, if necessary.
-* To define default versions and configurations for commonly used plug-ins. This is doen by declaring
-  managed plug-ins, which the same as managed dependencies. This saves even more space in the inheriting
+* To define default versions and configurations for commonly used plug-ins. This is done by declaring
+  managed plug-ins, which work the same as managed dependencies. This saves even more space in the inheriting
   project, as plug-in configurations can be rather long.
 * To declare a few dependencies and plug-ins that are (almost) always used in DANS projects. However, this
   is only done in the sub-modules lowest in the hierarchy, so if you really do not need those dependencies
@@ -43,8 +41,8 @@ This is done to achieve the following goals.
 
 
 ### Design
-A of writing this, Maven is unfortunately still rather low in composability. This means that, to split up a
-POM you do not have a lot of options. If you have to use the managed dependencies you are basically stuck with
+As of writing this, Maven is unfortunately still rather low in composability. This means that to split up a
+POM you do not have a whole lot of options. If you have to use the managed dependencies you are basically stuck with
 splitting up over a single-inheritance hierarchy, so that is what we have done here. This hierarchy is subdivided
 as follows:
 

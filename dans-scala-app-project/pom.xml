@@ -30,12 +30,6 @@
     <artifactId>dans-scala-app-project</artifactId>
     <name>DANS Scala Application/Service Project</name>
     <packaging>pom</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.12</artifactId>
-        </dependency>
-    </dependencies>
     <build>
         <resources>
             <resource>

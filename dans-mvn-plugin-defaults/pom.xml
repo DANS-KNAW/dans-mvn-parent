@@ -48,6 +48,7 @@
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <maven-war-plugin.version>2.6</maven-war-plugin.version>
+        <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
 
         <!-- Assembling installables -->
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
@@ -64,12 +65,13 @@
         <!-- Debugging -->
         <exec-maven-plugin.version>1.4.0</exec-maven-plugin.version>
 
-
         <!-- Legacy -->
         <aspectj-maven-plugin.version>1.4</aspectj-maven-plugin.version>
         <build-helper-maven-plugin.version>1.8</build-helper-maven-plugin.version>
         <maven-jibx-plugin.version>1.2.5</maven-jibx-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+        <maven-java-formatter-plugin.version>0.4</maven-java-formatter-plugin.version>
+        <maven-site-plugin.version>3.7</maven-site-plugin.version>
 
 
     </properties>
@@ -179,6 +181,11 @@
                         <junitxml>.</junitxml>
                         <filereports>WDF TestSuite.txt</filereports>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
                 </plugin>
 
 
@@ -521,6 +528,30 @@
                         </includes>
                         <verbose>false</verbose>
                     </configuration>
+                </plugin>
+
+                <!-- Legacy code formatter -->
+                <plugin>
+                    <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                    <artifactId>maven-java-formatter-plugin</artifactId>
+                    <version>${maven-java-formatter-plugin.version}</version>
+                    <configuration>
+                        <configFile>${project.build.directory}/dans-build-resources/code-formatting/dans-java-formatting-style.xml</configFile>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>format</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Legacy Maven site generation -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
                 </plugin>
 
                 <!-- Legacy to keep Eclipse happy, for projects that still need it -->
