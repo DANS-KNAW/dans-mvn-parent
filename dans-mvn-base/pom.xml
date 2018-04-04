@@ -24,6 +24,10 @@
     <name>DANS Maven Project Basic Settings</name>
     <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <scm>
+        <developerConnection>scm:git:https://github.com/DANS-KNAW/${project.artifactId}</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
     <description>
         Parent project for all DANS Maven-based projects. It only defines some basic settings and one
         plug-in, namely the JFrog plug-in to publish the module and its descendants to the DANS Maven Repository.

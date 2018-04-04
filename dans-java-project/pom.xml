@@ -33,6 +33,10 @@
         A bare bones Java-based project.
     </description>
     <packaging>pom</packaging>
+    <scm>
+        <developerConnection>scm:git:https://github.com/DANS-KNAW/${project.artifactId}</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
