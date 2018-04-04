@@ -23,7 +23,8 @@ or:
 
 DESCRIPTION
 -----------
-This module defines several Maven parent projects for use in DANS Maven based projects.
+This module contains the main build for several other projects. This projects define parent POMs for use in DANS
+Maven-based projects.
 
 ### Goals
 * Define default versions and scopes for commonly used dependencies. This is done by declaring
@@ -70,6 +71,9 @@ POM                          | Description
 `dans-scala-project`         | The basic dependencies and plug-ins needed for any DANS Scala project.
 `dans-scala-app-project`     | The basic dependencies and plug-ins needed for a Scala based application.`dans-scala-app-project`
 `dans-scala-service-project` | The basic dependencies and plug-ins needed for a Scala based service.
+
+
+
 
 
 Note that this means that only the projects with names ending in `-project` declare any dependencies or plug-ins actually inherited by your
@@ -128,5 +132,13 @@ Prerequisites:
 Steps:
 
     git clone https://github.com/DANS-KNAW/dans-mvn-parent.git
+    git clone https://github.com/DANS-KNAW/dans-mvn-base.git
+    git clone https://github.com/DANS-KNAW/dans-mvn-build-resources.git
+    git clone https://github.com/DANS-KNAW/dans-mvn-plugin-defaults.git
+    git clone https://github.com/DANS-KNAW/dans-mvn-lib-defaults.git
+    git clone https://github.com/DANS-KNAW/dans-java-project.git
+    git clone https://github.com/DANS-KNAW/dans-scala-project.git
+    git clone https://github.com/DANS-KNAW/dans-scala-app-project.git
+    git clone https://github.com/DANS-KNAW/dans-scala-service-project.git
     cd dans-mvn-parent
     mvn install
