@@ -59,9 +59,6 @@
         <main-class>NoMainClass</main-class><!-- Only a placeholder is declared here. The inheriting project should fill in the FQN of the main class -->
         <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
 
-        <!-- Releasing to the DANS Maven repository -->
-        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-
         <!-- Debugging -->
         <exec-maven-plugin.version>1.4.0</exec-maven-plugin.version>
 
@@ -397,18 +394,6 @@
                         </execution>
                     </executions>
                 </plugin>
-
-                <!-- Releasing to the DANS Maven repository -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${maven-release-plugin.version}</version>
-                    <configuration>
-                        <tagNameFormat>v@{project.version}</tagNameFormat>
-                        <pushChanges>false</pushChanges>
-                    </configuration>
-                </plugin>
-
 
                 <!-- Debugging -->
                 <plugin>
