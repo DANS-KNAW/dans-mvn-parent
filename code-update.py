@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 
 user_home = os.environ['HOME']
 dans_parent_dir = os.environ.get('DANS_PARENT_DIR', user_home + '/git/service/dans-parent')
-repo_base_url = 'git@github.com:DANS-KNAW'
+repo_base_url = 'https://github.com/DANS-KNAW'
 
 def update_module( module ):
     print '>>> Updating module ' + module + ' ...'

@@ -131,14 +131,10 @@ Prerequisites:
 
 Steps:
 
-    git clone https://github.com/DANS-KNAW/dans-mvn-parent.git
-    git clone https://github.com/DANS-KNAW/dans-mvn-base.git
-    git clone https://github.com/DANS-KNAW/dans-mvn-build-resources.git
-    git clone https://github.com/DANS-KNAW/dans-mvn-plugin-defaults.git
-    git clone https://github.com/DANS-KNAW/dans-mvn-lib-defaults.git
-    git clone https://github.com/DANS-KNAW/dans-java-project.git
-    git clone https://github.com/DANS-KNAW/dans-scala-project.git
-    git clone https://github.com/DANS-KNAW/dans-scala-app-project.git
-    git clone https://github.com/DANS-KNAW/dans-scala-service-project.git
-    cd dans-mvn-parent
+    git clone -o blessed https://github.com/DANS-KNAW/dans-mvn-parent.git ~/git/service/dans-parent/dans-mvn-parent
+    cd ~/git/service/dans-parent/dans-mvn-parent
+    ./code-update.py
     mvn install
+
+
+git clone -o blessed https://github.com/DANS-KNAW/dans-mvn-parent.git ~/Downloads/foo
