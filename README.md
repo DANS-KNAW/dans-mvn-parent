@@ -135,6 +135,3 @@ Steps:
     cd ~/git/service/dans-parent/dans-mvn-parent
     ./code-update.py
     mvn install
-
-
-git clone -o blessed https://github.com/DANS-KNAW/dans-mvn-parent.git ~/Downloads/foo
