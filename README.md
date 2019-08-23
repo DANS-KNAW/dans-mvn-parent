@@ -66,8 +66,6 @@ Some profiles have been defined to facilitate testing and overriding behaviour:
 
 * `local-deploy-test` - Will override the `distributionManagement` to deploy to a local test VM. See [dans-develop-dtap](https://github.com/DANS-KNAW/dans-develop-dtap)
   for how to set up such a local VM. This is profile is intended for testing and debugging the parent POMs themselves.
-* `local-lib-deploy-test` - The same as above but specifically for `dans-scala-app-project` and descendants, to force deployment to a Maven repo
-  on the test VM, instead of a YUM repo. You will also need to activate the `lib-deploy` profile.
 * `lib-deploy` - `dans-scala-app-project` and descendants, to force deployment of Maven artifacts to a Maven repository.
 
 #### Examples
