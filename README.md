@@ -9,7 +9,7 @@ SYNOPSIS
     <parent>
        <groupId>nl.knaw.dans.shared</groupId>
        <artifactId>dans-java-project</artifactId>
-       <version>2.0.0</version>
+       <version>4.0.0</version>
     </parent>
 
 or:
@@ -17,13 +17,13 @@ or:
     <parent>
        <groupId>nl.knaw.dans.shared</groupId>
        <artifactId>dans-scala-[(app|service)-]project</artifactId>
-       <version>2.0.0</version>
+       <version>4.0.0</version>
     </parent>
 
 
 DESCRIPTION
 -----------
-This module contains the main build for several other projects. This projects define parent POMs for use in DANS
+This module contains the main build for several other projects. These projects define parent POMs for use in DANS
 Maven-based projects.
 
 ### Goals
@@ -38,8 +38,76 @@ Maven-based projects.
   is only done in the sub-modules lowest in the hierarchy, so if you really do not need those dependencies
   you can inherit from a parent higher in the tree.
 
-### Main features
+### Deploying artifacts
+In Maven-speak to *deploy* an artifact means publishing it so a repository for distribution. This process is supported
+by the `maven-deploy-plugin`. 
 
+The `maven-release-plugin` supports creating releases, which is subdivided into two steps:
+
+1. **Preparing** the release: removing the `SNAPSHOT`-suffix from the version number, 
+   tagging a commit in git with this version and pushing that to GitHub. Command line: `mvn release:clean release:prepare`.
+2. **Performing** the release: cloning the git repo to a temp-directory, checking out the release tag, building 
+   that commit and deploying it to the `repository` specified in the POM's `<distributionManagement>`. 
+   Command line: `mvn release:perform`. Note that this will invoke the `maven-deploy-plugin` in the last step.
+   
+If you call the `maven-deploy-plugin` directly it will build a snapshot version and deploy the artifact to the 
+`snapshotRepository` as defined in the POM's `<distributionManagement>` element. Command line: `mvn deploy` (`deploy` is 
+actually [a Maven lifecycle phase](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html), so it
+will cause Maven to execute all the phases leading up to it first).   
+ 
+The distribution repositories are usually Maven-repositories. However, we want to distribute our RPM-packages through 
+YUM, so the parent POMs contain support for this: 
+
+* `dans-scala-app-project` and descendants are assumed to build RPM packages. The deploy phase has therefore been overridden
+  to call a script that uploads the RPMs to a YUM repository.
+* Descendants of the other POMs are assumed to build Maven artifacts and will use the default functionality.
+
+Some profiles have been defined to facilitate testing and overriding behaviour:
+
+* `local-deploy-test` - Will override the `distributionManagement` to deploy to a local test VM. See [dans-develop-dtap](https://github.com/DANS-KNAW/dans-develop-dtap)
+  for how to set up such a local VM. This is profile is intended for testing and debugging the parent POMs themselves.
+* `local-lib-deploy-test` - The same as above but specifically for `dans-scala-app-project` and descendants, to force deployment to a Maven repo
+  on the test VM, instead of a YUM repo. You will also need to activate the `lib-deploy` profile.
+* `lib-deploy` - `dans-scala-app-project` and descendants, to force deployment of Maven artifacts to a Maven repository.
+
+#### Examples
+
+**Note that Maven profiles are activated using the `-P` option. Do not confuse with `-D`!!** 
+
+##### Preparing a release
+
+This is the same in all modules
+```bash
+# Build the next release version and push it to GitHub
+mvn release:clean release:prepare 
+```
+
+##### In `dans-scala-app-project` descendants
+```bash
+# Build a snapshot and deploy RPM to rpm-snapshots YUM repo
+mvn deploy 
+
+# Build the release version described in release.properties and deploy RPM to rpm-releases YUM repo
+mvn release:perform
+
+# Build a snapshot and deploy artifact assets to maven-snapshots Maven repo
+mvn -Plib-deploy deploy
+
+# Build the release version described in release.properties and deploy artifact assets to maven-releases Maven repo
+mvn -Plib-deploy release:perform
+```
+
+When testing with the local VM add `-Plocal-deploy-test`, except when `-Plib-deploy` is specified, then instead add `-Plocal-lib-deploy-test` (so **keep** `-Plib-deploy`).
+
+##### In other parent POM descendants
+```bash
+# Build a snapshot and deploy artifact assets to maven-snapshots Maven repo
+mvn deploy
+
+# Build the release version described in release.properties and deploy artifact assets to maven-releases Maven repo
+mvn release:perform
+```
+When testing with the local VM add `-Plocal-deploy-test`.
 
 ### Design
 As of writing this, Maven is unfortunately still rather low in composability. This means that to split up a
@@ -69,12 +137,8 @@ POM                          | Description
 `dans-mvn-lib-defaults`      | Only managed dependency configurations.
 `dans-java-project`          | The basic dependencies and plug-ins needed for any DANS Java project.
 `dans-scala-project`         | The basic dependencies and plug-ins needed for any DANS Scala project.
-`dans-scala-app-project`     | The basic dependencies and plug-ins needed for a Scala based application.`dans-scala-app-project`
+`dans-scala-app-project`     | The basic dependencies and plug-ins needed for a Scala based application.
 `dans-scala-service-project` | The basic dependencies and plug-ins needed for a Scala based service.
-
-
-
-
 
 Note that this means that only the projects with names ending in `-project` declare any dependencies or plug-ins actually inherited by your
 project. (Actually, `dans-mvn-base` also does, but it is one plug-in dependency you can easily ignore.)
@@ -95,7 +159,7 @@ This will look like the following. Note that the version in this example may not
         <parent>
             <groupId>nl.knaw.dans.shared</groupId>
             <artifactId>dans-scala-app-project</artifactId>
-            <version>2.0.0</version>
+            <version>4.0.0</version>
         </parent>
         <!-- ... -->
         <repositories>
