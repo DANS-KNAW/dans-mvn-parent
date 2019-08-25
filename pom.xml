@@ -7,21 +7,17 @@
     <name>DANS Maven Parents Master Build</name>
     <version>4.0.0</version>
     <packaging>pom</packaging>
-    <properties>
-        <snapshot-repository>http://maven-repo.dans.knaw.nl/repository/maven-snapshots</snapshot-repository>
-        <release-repository>http://maven-repo.dans.knaw.nl/repository/maven-releases</release-repository>
-    </properties>
-    <distributionManagement>
-        <!-- Credentials for server are defined in ~/.m2/settings.xml -->
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <url>${snapshot-repository}</url>
-        </snapshotRepository>
-        <repository>
-            <id>nexus-releases</id>
-            <url>${release-repository}</url>
-        </repository>
-    </distributionManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <modules>
         <module>../dans-mvn-base</module>
         <module>../dans-mvn-plugin-defaults</module>
@@ -32,22 +28,4 @@
         <module>../dans-scala-service-project</module>
         <module>../dans-java-project</module>
     </modules>
-    <profiles>
-        <profile>
-            <id>local-deploy-test</id>
-            <!--
-            To locally test the deployment procedure activate this profile, e.g.,
-
-            mvn -Plocal-deploy-test deploy
-
-            The artifacts will be deployed to dnexus.dans.knaw.nl. This domain name
-            should be configured in your local /etc/hosts to point to the VM
-            running the Nexus server.
-            -->
-            <properties>
-                <snapshot-repository>http://dnexus.dans.knaw.nl/repository/maven-snapshots</snapshot-repository>
-                <release-repository>http://dnexus.dans.knaw.nl/repository/maven-releases</release-repository>
-            </properties>
-        </profile>
-    </profiles>
 </project>
