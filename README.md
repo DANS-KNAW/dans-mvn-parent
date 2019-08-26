@@ -39,6 +39,8 @@ Maven-based projects.
   you can inherit from a parent higher in the tree.
 
 ### Deploying artifacts
+
+#### Default deploy behavior
 In Maven-speak *deploying* an artifact means publishing it to a repository for distribution. This process is supported
 by the `maven-deploy-plugin`. 
 
@@ -56,53 +58,26 @@ If you call the `maven-deploy-plugin` directly it will build a snapshot version 
 actually [a Maven lifecycle phase](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html), so it
 will cause Maven to execute all the phases leading up to it first).   
  
+#### Overrides for deploying RPMs
 The distribution repositories are usually Maven-repositories. However, we want to distribute our RPM-packages through 
-YUM, so the parent POMs contain support for this: 
+YUM. To support this, projects can override the default `maven-deploy-plugin`. This is done by activating `maven-antrun-plugin`
+and `exec-maven-plugin`. These have been configured in `dans-mvn-plugin-defaults` to do the following during the deploy 
+phase:
 
-* 
+* Look under `target` for one RPM file
+* `PUT` that file to `${rpm-snapshot-repository}` or `${rpm-release-repository}`, depending on the version of the project
+   being a snapshot version or not.
+   
+These overrides are active for all non-POM-descendants of `dans-scala-app-project`. They have also been copied to certain
+legacy projects.
 
-Some profiles have been defined to facilitate testing and overriding behaviour:
+#### Mixed Maven/RPM modules
+What if an RPM-module *also* needs to be published as a library to Maven? Actually, a project that requires this should be
+refactored to have two submodules: one for the lib and one for the RPM. For now, the default deploy behavior can be restored
+by activating the `lib-deploy` profile (defined in `dans-scala-app-project`). To avoid deploying RPMs to Maven, which is a
+waste of space, this should be combined with deactivating the `rpm` profile:
 
-* `lib-deploy` - `dans-scala-app-project` and descendants, to force deployment of Maven artifacts to a Maven repository.
-
-#### Examples
-
-**Note that Maven profiles are activated using the `-P` option. Do not confuse with `-D`!!** 
-
-##### Preparing a release
-
-This is the same in all modules
-```bash
-# Build the next release version and push it to GitHub
-mvn release:clean release:prepare 
-```
-
-##### In `dans-scala-app-project` descendants
-```bash
-# Build a snapshot and deploy RPM to rpm-snapshots YUM repo
-mvn deploy 
-
-# Build the release version described in release.properties and deploy RPM to rpm-releases YUM repo
-mvn release:perform
-
-# Build a snapshot and deploy artifact assets to maven-snapshots Maven repo
-mvn -Plib-deploy deploy
-
-# Build the release version described in release.properties and deploy artifact assets to maven-releases Maven repo
-mvn -Plib-deploy release:perform
-```
-
-When testing with the local VM add `-Plocal-deploy-test`, except when `-Plib-deploy` is specified, then instead add `-Plocal-lib-deploy-test` (so **keep** `-Plib-deploy`).
-
-##### In other parent POM descendants
-```bash
-# Build a snapshot and deploy artifact assets to maven-snapshots Maven repo
-mvn deploy
-
-# Build the release version described in release.properties and deploy artifact assets to maven-releases Maven repo
-mvn release:perform
-```
-When testing with the local VM add `-Plocal-deploy-test`.
+`mvn -P'!rpm1' -Plib-deploy`
 
 ### Design
 As of writing this, Maven is unfortunately still rather low in composability. This means that to split up a
