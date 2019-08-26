@@ -9,7 +9,7 @@ SYNOPSIS
     <parent>
        <groupId>nl.knaw.dans.shared</groupId>
        <artifactId>dans-java-project</artifactId>
-       <version>2.0.0</version>
+       <version>4.0.0</version>
     </parent>
 
 or:
@@ -17,13 +17,13 @@ or:
     <parent>
        <groupId>nl.knaw.dans.shared</groupId>
        <artifactId>dans-scala-[(app|service)-]project</artifactId>
-       <version>2.0.0</version>
+       <version>4.0.0</version>
     </parent>
 
 
 DESCRIPTION
 -----------
-This module contains the main build for several other projects. This projects define parent POMs for use in DANS
+This module contains the main build for the projects that define parent POMs for use in DANS
 Maven-based projects.
 
 ### Goals
@@ -38,8 +38,46 @@ Maven-based projects.
   is only done in the sub-modules lowest in the hierarchy, so if you really do not need those dependencies
   you can inherit from a parent higher in the tree.
 
-### Main features
+### Deploying artifacts
 
+#### Default deploy behavior
+In Maven-speak *deploying* an artifact means publishing it to a repository for distribution. This process is supported
+by the `maven-deploy-plugin`. 
+
+The `maven-release-plugin` supports creating releases, which is subdivided into two steps:
+
+1. **Preparing** the release: creating a non-snapshot version, committing and tagging it and and pushing it to GitHub. A `release.properties` file
+   containing the details of the release will also be created; it is required for the next step (see below). 
+   Command line: `mvn release:clean release:prepare`.
+2. **Performing** the release: cloning the git repo to `target/checkout`, checking out the release tag, building 
+   that commit and deploying it to the `repository` specified in the POM's `<distributionManagement>`. 
+   Command line: `mvn release:perform`. Note that this will invoke the `maven-deploy-plugin` in the last step.
+   
+If you call the `maven-deploy-plugin` directly it will build a snapshot version and deploy the artifact to the 
+`snapshotRepository` as defined in the POM's `<distributionManagement>` element. Command line: `mvn deploy` (`deploy` is 
+actually [a Maven lifecycle phase](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html), so it
+will cause Maven to execute all the phases leading up to it first).   
+ 
+#### Overrides for deploying RPMs
+The distribution repositories are usually Maven-repositories. However, we want to distribute our RPM-packages through 
+YUM. To support this, projects can override the default `maven-deploy-plugin`. This is done by activating `maven-antrun-plugin`
+and `exec-maven-plugin`. These have been configured in `dans-mvn-plugin-defaults` to do the following during the deploy 
+phase:
+
+* Look under `target` for one RPM file
+* `PUT` that file to `${rpm-snapshot-repository}` or `${rpm-release-repository}`, depending on the version of the project
+   being a snapshot version or not.
+   
+These overrides are active for all non-POM-descendants of `dans-scala-app-project`. They have also been copied to certain
+legacy projects.
+
+#### Mixed Maven/RPM modules
+What if an RPM-module *also* needs to be published as a library to Maven? Actually, a project that requires this should be
+refactored to have two submodules: one for the lib and one for the RPM. For now, the default deploy behavior can be restored
+by activating the `lib-deploy` profile (defined in `dans-scala-app-project`). To avoid deploying RPMs to Maven, which is a
+waste of space, this should be combined with deactivating the `rpm` profile:
+
+`mvn -P'!rpm1' -Plib-deploy`
 
 ### Design
 As of writing this, Maven is unfortunately still rather low in composability. This means that to split up a
@@ -69,12 +107,8 @@ POM                          | Description
 `dans-mvn-lib-defaults`      | Only managed dependency configurations.
 `dans-java-project`          | The basic dependencies and plug-ins needed for any DANS Java project.
 `dans-scala-project`         | The basic dependencies and plug-ins needed for any DANS Scala project.
-`dans-scala-app-project`     | The basic dependencies and plug-ins needed for a Scala based application.`dans-scala-app-project`
+`dans-scala-app-project`     | The basic dependencies and plug-ins needed for a Scala based application.
 `dans-scala-service-project` | The basic dependencies and plug-ins needed for a Scala based service.
-
-
-
-
 
 Note that this means that only the projects with names ending in `-project` declare any dependencies or plug-ins actually inherited by your
 project. (Actually, `dans-mvn-base` also does, but it is one plug-in dependency you can easily ignore.)
@@ -95,7 +129,7 @@ This will look like the following. Note that the version in this example may not
         <parent>
             <groupId>nl.knaw.dans.shared</groupId>
             <artifactId>dans-scala-app-project</artifactId>
-            <version>2.0.0</version>
+            <version>4.0.0</version>
         </parent>
         <!-- ... -->
         <repositories>
