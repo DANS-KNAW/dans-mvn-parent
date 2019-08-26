@@ -23,7 +23,7 @@ or:
 
 DESCRIPTION
 -----------
-This module contains the main build for several other projects. These projects define parent POMs for use in DANS
+This module contains the main build for the projects that define parent POMs for use in DANS
 Maven-based projects.
 
 ### Goals
@@ -39,14 +39,15 @@ Maven-based projects.
   you can inherit from a parent higher in the tree.
 
 ### Deploying artifacts
-In Maven-speak to *deploy* an artifact means publishing it so a repository for distribution. This process is supported
+In Maven-speak *deploying* an artifact means publishing it to a repository for distribution. This process is supported
 by the `maven-deploy-plugin`. 
 
 The `maven-release-plugin` supports creating releases, which is subdivided into two steps:
 
-1. **Preparing** the release: removing the `SNAPSHOT`-suffix from the version number, 
-   tagging a commit in git with this version and pushing that to GitHub. Command line: `mvn release:clean release:prepare`.
-2. **Performing** the release: cloning the git repo to a temp-directory, checking out the release tag, building 
+1. **Preparing** the release: creating a non-snapshot version, committing and tagging it and and pushing it to GitHub. A `release.properties` file
+   containing the details of the release will also be created; it is required for the next step (see below). 
+   Command line: `mvn release:clean release:prepare`.
+2. **Performing** the release: cloning the git repo to `target/checkout`, checking out the release tag, building 
    that commit and deploying it to the `repository` specified in the POM's `<distributionManagement>`. 
    Command line: `mvn release:perform`. Note that this will invoke the `maven-deploy-plugin` in the last step.
    
@@ -58,14 +59,10 @@ will cause Maven to execute all the phases leading up to it first).
 The distribution repositories are usually Maven-repositories. However, we want to distribute our RPM-packages through 
 YUM, so the parent POMs contain support for this: 
 
-* `dans-scala-app-project` and descendants are assumed to build RPM packages. The deploy phase has therefore been overridden
-  to call a script that uploads the RPMs to a YUM repository.
-* Descendants of the other POMs are assumed to build Maven artifacts and will use the default functionality.
+* 
 
 Some profiles have been defined to facilitate testing and overriding behaviour:
 
-* `local-deploy-test` - Will override the `distributionManagement` to deploy to a local test VM. See [dans-develop-dtap](https://github.com/DANS-KNAW/dans-develop-dtap)
-  for how to set up such a local VM. This is profile is intended for testing and debugging the parent POMs themselves.
 * `lib-deploy` - `dans-scala-app-project` and descendants, to force deployment of Maven artifacts to a Maven repository.
 
 #### Examples
