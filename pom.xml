@@ -7,6 +7,10 @@
     <name>DANS Maven Parents Master Build</name>
     <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <scm>
+        <developerConnection>scm:git:https://github.com/DANS-KNAW/${project.artifactId}</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
     <build>
         <plugins>
             <plugin>
